@@ -28,8 +28,8 @@ TEST_CASE("conditional log with formate string", "[conditional]") {
 
     logger->flush();
     REQUIRE(count_lines(TEST_FILENAME) == 1);
-    REQUIRE(ends_with(file_contents(TEST_FILENAME), "Found 5 errors\n"));
-
+    // REQUIRE(ends_with(file_contents(TEST_FILENAME), "Found 5 errors\n"));
+    REQUIRE(ends_with(file_contents(TEST_FILENAME), "Found 5 errors" SPDLOG_EOL));
     // test condition is false
     error_count = 0;
     SPDLOG_LOGGER_CONDITIONAL(logger, error_count > 0, spdlog::level::err, "Found {} errors",
@@ -60,8 +60,8 @@ TEST_CASE("every_n log", "[conditional]") {
     logger->flush();
 
     REQUIRE(count_lines("test_logs/every_n_log") == 10);
-    REQUIRE(file_contents("test_logs/every_n_log").find("Progress: 0\n") == 0);
-
+    // REQUIRE(file_contents("test_logs/every_n_log").find("Progress: 0\n") == 0);
+    REQUIRE(file_contents("test_logs/every_n_log").find("Progress: 0" SPDLOG_EOL) == 0);
     spdlog::drop("every_n_logger");
 }
 
@@ -79,8 +79,8 @@ TEST_CASE("throttle log", "[conditional]") {
     }
     logger->flush();
     REQUIRE(count_lines(path) == 1);
-    REQUIRE(file_contents(path).find("event 0\n") == 0);
-
+    // REQUIRE(file_contents(path).find("event 0\n") == 0);
+    REQUIRE(file_contents(path).find("event 0" SPDLOG_EOL) == 0);
     // 2. short interval: logs again after the interval has passed
     for (int round = 0; round < 2; ++round) {
         SPDLOG_LOGGER_THROTTLE(logger, spdlog::level::info, 0.1, "tick {}", round);
